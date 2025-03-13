@@ -23,19 +23,30 @@ public class DatabaseManager {
     public static void updateContact(int id, String name, String phoneNumber, String email, String address) {
         String sql = "UPDATE Contacts SET Name=?, PhoneNumber=?, Email=?, Address=? WHERE ContactID=?";
 
+        if (name == null || name.trim().isEmpty()) {
+            System.out.println("Error: Name cannot be empty.");
+            return;
+        }
+
         try (Connection conn = connection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
-            stmt.setString(2, phoneNumber);
-            stmt.setString(3, email);
-            stmt.setString(4, address);
+            stmt.setString(2, phoneNumber != null ? phoneNumber : ""); // If null, store empty string
+            stmt.setString(3, email != null ? email : "");
+            stmt.setString(4, address != null ? address : "");
             stmt.setInt(5, id);
-            stmt.executeUpdate();
-            System.out.println("Contact updated successfully.");
+
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Contact updated successfully.");
+            } else {
+                System.out.println("Error: Contact ID not found.");
+            }
         } catch (SQLException e) {
             System.err.println("Error updating contact: " + e.getMessage());
         }
     }
+
 
     public static void deleteContact(int id) {
         String sql = "DELETE FROM Contacts WHERE ContactID=?";
