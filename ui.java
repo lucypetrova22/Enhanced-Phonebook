@@ -54,17 +54,32 @@ public class ui extends JFrame {
 
     private void updateContact() {
         int row = contactTable.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Select a contact to update!"); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Select a contact to update!");
+            return;
+        }
 
         int id = (int) tableModel.getValueAt(row, 0);
-        String name = JOptionPane.showInputDialog("Enter Name:", tableModel.getValueAt(row, 1));
-        String phone = JOptionPane.showInputDialog("Enter Phone:", tableModel.getValueAt(row, 2));
-        String email = JOptionPane.showInputDialog("Enter Email:", tableModel.getValueAt(row, 3));
-        String address = JOptionPane.showInputDialog("Enter Address:", tableModel.getValueAt(row, 4));
+        String currentName = (String) tableModel.getValueAt(row, 1);
+        String currentPhone = (String) tableModel.getValueAt(row, 2);
+        String currentEmail = (String) tableModel.getValueAt(row, 3);
+        String currentAddress = (String) tableModel.getValueAt(row, 4);
+
+
+        String name = JOptionPane.showInputDialog("Enter Name:", currentName);
+        if (name == null || name.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name cannot be empty.");
+            return;
+        }
+
+        String phone = JOptionPane.showInputDialog("Enter Phone:", currentPhone);
+        String email = JOptionPane.showInputDialog("Enter Email:", currentEmail);
+        String address = JOptionPane.showInputDialog("Enter Address:", currentAddress);
 
         DatabaseManager.updateContact(id, name, phone, email, address);
         loadContacts();
     }
+
 
     private void deleteContact() {
         int row = contactTable.getSelectedRow();
